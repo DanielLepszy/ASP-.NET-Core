@@ -209,8 +209,8 @@ namespace ExamPlatform.Controllers
                     var CQuestions = SelectedCourse.ClosedQuestionsList.DistinctBy(q => q.Question).ToList();
                     var OQuestions = SelectedCourse.OpenedQuestionsList.DistinctBy(q => q.Question).ToList();
 
-                    CQuestions = SelectClosedQuestions(CQuestions, 4);
-                    OQuestions = SelectOpenedQuestions(OQuestions, 4);
+                    CQuestions = SelectClosedQuestions(CQuestions, 7);
+                    OQuestions = SelectOpenedQuestions(OQuestions, 6);
 
                     var ExamCQuestions = CreateExamClosedQuestions(CQuestions);
                     var ExamOQuestions = CreateExamOpenedQuestions(OQuestions);
@@ -219,7 +219,7 @@ namespace ExamPlatform.Controllers
                     Exams exam = new Exams()
                     {
                         AmountClosedQuestions = CQuestions.Count(),
-                        AmountOpenedQuestions = 4,
+                        AmountOpenedQuestions = OQuestions.Count(),
                         ExamTimeInMinute = 30,
                         DateOfExam = DateTime.Now,
 
