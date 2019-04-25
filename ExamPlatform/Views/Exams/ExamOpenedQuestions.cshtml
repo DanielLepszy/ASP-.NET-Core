@@ -1,0 +1,33 @@
+﻿
+@model List<ExamPlatformDataModel.OpenedQuestions>
+
+<div id="SecondPartExam">
+
+    <h2>
+        @*@Model.Course.CourseType*@
+    </h2>
+      
+    <form id="OpenedQuestionsForm" name="AnswersForm" asp-controller="Exams" asp-action="ShowOpenedQuestions">
+        <ul>
+            @foreach (var item in Model)
+            {
+            <li style="list-style:decimal">
+                <div class="form-group shadow-textarea" id="OpenedAnswerTextarea">
+                 
+                    <label>
+                        @Html.DisplayFor(exItem => item.Question)
+
+                        <textarea  name="@item.Question" class="form-control z-depth-1"
+                                  rows="5" cols="50" placeholder="Write your answer here..."></textarea>
+                    </label>
+                </div>
+            </li>
+            }
+            </ul>
+            <input id ="SecondExamPart" type="submit" value="Next" 
+                    asp-controller="Exams" asp-action="SetOpenedQuestionsAnswers" />
+</form>
+     
+
+</div>
+

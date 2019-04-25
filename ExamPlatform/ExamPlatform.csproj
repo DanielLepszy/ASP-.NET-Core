@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20190306184848_Fix ExClosedQuestions.cs" />
+    <Compile Remove="Migrations\20190306184848_Fix ExClosedQuestions.Designer.cs" />
+    <Compile Remove="Migrations\20190306185055_Fix ExClosedQuestions.cs" />
+    <Compile Remove="Migrations\20190306185055_Fix ExClosedQuestions.Designer.cs" />
+    <Compile Remove="Migrations\20190306190134_Fix ExClosedQuestions.cs" />
+    <Compile Remove="Migrations\20190306190134_Fix ExClosedQuestions.Designer.cs" />
+    <Compile Remove="Migrations\20190306192431_Fix ExClosedQuestions.cs" />
+    <Compile Remove="Migrations\20190306192431_Fix ExClosedQuestions.Designer.cs" />
+    <Compile Remove="Migrations\20190312175939_add virtual.cs" />
+    <Compile Remove="Migrations\20190312175939_add virtual.Designer.cs" />
+    <Compile Remove="Migrations\20190316093721_New Mig.cs" />
+    <Compile Remove="Migrations\20190316093721_New Mig.Designer.cs" />
+    <Compile Remove="Migrations\20190317124423_add status to account.cs" />
+    <Compile Remove="Migrations\20190317124423_add status to account.Designer.cs" />
+    <Compile Remove="Migrations\20190317124553_add status to account.cs" />
+    <Compile Remove="Migrations\20190317124553_add status to account.Designer.cs" />
+    <Compile Remove="Migrations\20190414215407_new decimal.cs" />
+    <Compile Remove="Migrations\20190414215407_new decimal.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="4.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.1.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
+    <PackageReference Include="MoreLinq.Portable" Version="1.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ExamPlatformDataModel\ExamPlatformDataModel.csproj" />
+  </ItemGroup>
+
+</Project>

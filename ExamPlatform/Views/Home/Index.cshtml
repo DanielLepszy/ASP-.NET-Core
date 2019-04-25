@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<div class="row" id='jubmo'>
+    <div class="jumbotron">
+        <h1>Hello Students</h1>
+        <p class="lead">It's time to examine you &#x263A</p>
+        <p><a asp-area="" asp-controller="Accounts" asp-action="UserSignUp" class="btn btn-default btn-lg">Sign Up &raquo;</a></p>
+        @*<p><a asp-area="" asp-controller="Course" asp-action="ShowCourses" class="btn btn-default btn-lg">Sign Up &raquo;</a></p>*@
+    </div>
+   
+</div>  
+<div class="row" id="footer">
+    <footer>
+        <p>@Model</p>
+    </footer>
+</div>

@@ -1,0 +1,219 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    margin-right: 5px;
+    margin-left: 5px;
+    background: url('..//images/computers.svg') no-repeat center center fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+.body-content {
+    margin-top: 15px;
+    padding-right: 5px;
+    padding-left: 5px;
+    color: white;
+    background-color: rgba(255, 255, 255, 0.00);
+    width: 70%;
+    position: absolute;
+    left: 5%;
+}
+
+.jumbotron {
+    margin-top: 100px;
+    width: 100%;
+    padding: 0px;
+    margin-top: 0px;
+    background-color: rgba(255, 255, 255, 0.00);
+    font-family: Didot, serif;
+    transition: 1s;
+}
+
+    .jumbotron a {
+        background-color: transparent;
+        color: white;
+        border: 2px solid #e5e5e5;
+        transition: 0.5s;
+    }
+
+        .jumbotron a:hover {
+            background-color: rgba(255, 255, 255, 0.09);
+            color: white;
+            border: 2px solid #ffffff;
+            transition: 0.5s;
+        }
+
+        .jumbotron a:active {
+            transform: scale(0.95,0.95);
+            transition: 0.5s;
+        }
+
+    .jumbotron h1,
+    .lead {
+        overflow: hidden;
+        display: inline-block;
+        border-right: .11em solid orange;
+        white-space: nowrap;
+        margin: 0 auto;
+        letter-spacing: 0.07em;
+    }
+
+    .jumbotron h1 {
+        width: 7.3em;
+        animation: type 1.9s steps(40, end);
+        animation-fill-mode: forwards;
+    }
+
+.lead {
+    margin: 0px;
+    display: block;
+    width: 11.5em;
+    opacity: 0;
+    animation: type2 2s steps(40, end);
+    animation-delay: 2s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes type {
+    0% {
+        width: 0;
+    }
+
+    99.9% {
+        border-right: .15em solid orange;
+    }
+
+    100% {
+        border: none;
+    }
+}
+
+@keyframes type2 {
+    0% {
+        width: 0;
+    }
+
+    1% {
+        opacity: 1;
+    }
+
+    99.9% {
+        border-right: .15em solid orange;
+    }
+
+    100% {
+        opacity: 1;
+        border: none;
+    }
+}
+
+@keyframes blink {
+    50% {
+        border-color: transparent;
+    }
+}
+
+@keyframes blink-caret {
+    from, to {
+        border-color: transparent
+    }
+
+    50% {
+        border-color: orange;
+    }
+}
+
+#footer {
+    position: fixed;
+    left: 0px;
+    bottom: 0px;
+    height: 30px;
+    width: 100%;
+    margin: 0px 5px 0px 5px;
+    background: rgba(153, 153, 153, 0.10);
+    color: white;
+}
+
+.navbar {
+    margin-top: 10px;
+    background-color: rgba(255, 255, 255, 0.11);
+    border-bottom: 0px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: block;
+    transition: top 0.3s;
+}
+#container {
+    width: 100%;
+    padding-left:15px;
+    padding-right:15px;
+    left:0%;
+}
+#FirstPartExam {
+    border: solid white 1px;
+    padding-left:30px;
+    border-radius:2%;
+}
+#ClosedQuestionsForm li {
+    list-style:georgian;
+    list
+}
+#ClosedQuestionsForm  li {
+    list-style: none;
+}
+#FirstExamPart,
+#SecondExamPart {
+    border-radius: 15%;
+    font-size: 28px;
+    position: relative;
+    margin-bottom: 20px;
+    background-color:orange;
+    left: 80%;
+}
+
+#SecondPartExam {
+    margin:20px,5px,20px,5px;   
+    border-radius: 5%;
+    background-color: rgba(0, 0, 0, 0.45);
+    border: 3px solid #779ED6;
+}
+
+#OpenedAnswerTextarea textarea {
+    margin: 10px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.55);
+    border:2px solid #779ED6;
+}
+    #OpenedAnswerTextarea textarea:focus {
+        font-size: 16px;
+        background-color: rgba(0, 0, 0, 0.74);
+       
+    }
+#uncheckedExamsId {
+    background-color: #779ED6;
+    padding: 7px;
+    margin-left: 5px;
+    border: 1px solid #2b78e7;
+    border-radius: 50%;
+}
+#AdminLogInID .list-group-item {
+    background-color:rgba(0, 0, 0, 0.39)
+}
+#AdminLogInID .list-group-item a {
+   color:#ECFFD9;
+}
+/* QR code generator */
+#qrCode {
+    margin: 15px;
+}
+
+/* Hide/rearrange for smaller screens */
+@media screen and (max-width: 767px) {
+    /* Hide captions */
+    .carousel-caption {
+        display: none;
+    }
+}
+

@@ -1,0 +1,12 @@
+﻿@model ExamPlatformDataModel.Accounts
+@{
+    ViewData["Title"] = "LogIn";
+}
+<div>
+    <h1>Hello @Model.Name</h1>
+    <p>To start exam, please click below.</p>
+    <a asp-controller="Course" asp-action="ShowCourses" class="btn btn-default">Start</a>
+    <a asp-controller="Accounts" asp-action="Logout" class="btn btn-default">Log out</a>
+
+</div>
+

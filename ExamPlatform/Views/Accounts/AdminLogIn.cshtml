@@ -1,0 +1,17 @@
+﻿@model int
+@{
+    ViewData["Title"] = "AdminLogIn";
+}
+<div id="AdminLogInID">
+    <div class="list-group">
+        <div class="list-group-item">
+            <a asp-controller="StudentExams" asp-action="ShowStudentExamsToCheck" >Check student exams</a>
+            <span id="uncheckedExamsId">@Model</span>
+        </div>
+        <div class="list-group-item" >
+
+            <a asp-controller="StudentExams" asp-action="ShowAllCheckedExams" >Show results of exams</a>
+        </div>
+    </div>
+            <a asp-controller="Accounts" asp-action="Logout" class="btn btn-default">Log out</a>
+</div>
