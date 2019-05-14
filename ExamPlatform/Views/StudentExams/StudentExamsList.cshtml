@@ -5,7 +5,7 @@
 { 
     @foreach (var x in Model)
      {
-<div>
+<div id="StudentExamDiv">
     <h1>@x.StudentName @x.StudentSurname</h1>
 
     <table class="table">
@@ -29,7 +29,7 @@
                         <input type="hidden" name="ExamID" value="@x.ExamsUserID" />
                         <input type="hidden" name="ExamOpenedQuestionID" value="@z.ExamOpenedQuestionID" />
                         <td><input type="hidden" name="OpenedQuestions" value="@z.OpenedQuestion" />@z.OpenedQuestion</td>
-                        <td><input type="hidden" name="UserAnswer" value="@z.Answer" />@z.Answer"</td>
+                        <td><input type="hidden" name="UserAnswer" value="@z.Answer" />@z.Answer</td>
                         <td><input type="number" name="AnswerPoints" min="0" max="@z.MaxPoint" step="0.5" class="form-control" /></td>
                         <td><p class="form-control">/@z.MaxPoint</p></td>
                     </tr>

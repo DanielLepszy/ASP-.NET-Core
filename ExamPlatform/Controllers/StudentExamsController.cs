@@ -221,7 +221,7 @@ namespace ExamPlatform.Controllers
                                      where ex.ExamsID == i
                                      join results in context.Results on ex.ExamResult.ExamID equals results.ExamID
                                      join account in context.Account on ex.AccountID equals account.AccountsID
-                                     select new { account.Name, account.Surname, account.Email, ex.Course.CourseType, results.Grade, ex.DateOfExam }).Single();
+                                     select new { account.Name, account.Surname, account.Email, ex.Course.CourseType, results.Grade, ex.DateOfExam, results.Score,results.MaxExamPoints }).Single();
 
                    
                     UserEmailInfoModel model = new UserEmailInfoModel
@@ -230,7 +230,9 @@ namespace ExamPlatform.Controllers
                         UserEmail.Email,
                         UserEmail.CourseType,
                         UserEmail.Grade,
-                        UserEmail.DateOfExam);
+                        UserEmail.DateOfExam,
+                        UserEmail.Score,
+                        UserEmail.MaxExamPoints);
 
                     UserEmailList.Add(model);
                 }
@@ -271,7 +273,7 @@ namespace ExamPlatform.Controllers
                                      where ex.ExamResult.Grade != null
                                      join results in context.Results on ex.ExamResult.ExamID equals results.ExamID
                                      join account in context.Account on ex.AccountID equals account.AccountsID
-                                     select new { account.Name, account.Surname, account.Email, ex.Course.CourseType, results.Grade, ex.DateOfExam }).ToList();
+                                     select new { account.Name, account.Surname, account.Email, ex.Course.CourseType, results.Grade, ex.DateOfExam, results.Score,results.MaxExamPoints }).ToList();
 
                     List<UserEmailInfoModel> modelList = new List<UserEmailInfoModel>();
 
@@ -283,7 +285,9 @@ namespace ExamPlatform.Controllers
                         x.Email,
                         x.CourseType,
                         x.Grade,
-                        x.DateOfExam
+                        x.DateOfExam,
+                        x.Score,
+                        x.MaxExamPoints
                       ))
                     );
                    return View("ExamsResults", modelList);

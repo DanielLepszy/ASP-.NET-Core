@@ -9,16 +9,20 @@ namespace ExamPlatform.Models
         public String Email { get; set; }
         public String Course { get; set; }
         public double Score { get; set; }
+        public double MaxScore { get; set; }
         public double? Grade { get; set; }
         public DateTime ExamDate { get; set; }
 
-        public UserEmailInfoModel(String name, String surname, String email, String course, double? grade, DateTime examDate)
+
+        public UserEmailInfoModel(String name, String surname, String email, String course, double? grade, DateTime examDate,double score, double maxScore)
         {
             this.Name = name;
             this.Surname = surname;
             this.Email = email;
             this.Course = course;
             this.Grade = grade;
+            this.Score = score;
+            this.MaxScore = maxScore;
             this.ExamDate = examDate;
         }
     }

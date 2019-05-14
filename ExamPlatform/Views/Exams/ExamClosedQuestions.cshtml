@@ -5,43 +5,44 @@
     </h2>
     <hr>
     <form id="ClosedQuestionsForm" asp-controller="Exams" asp-action="ShowExam">
-
-        @foreach (var item in Model.ExamClosedQuestions)
-        {
-            <div>
-                <h3>
-                    <li> @Html.DisplayFor(exItem => item.ClosedQuestions.Question)</li>
-                </h3>
-            </div> <br>
-            <ol class="option">
-                <li>
-                    <label>
-                        <input type="radio" name="@item.ClosedQuestions.Question" value="@item.ClosedQuestions.Answer_1" />
-                        @Html.DisplayFor(exItem => item.ClosedQuestions.Answer_1)
-                    </label>
-                </li>
-                <li>
-                    <label>
-                        <input type="radio" name="@item.ClosedQuestions.Question" value="@item.ClosedQuestions.Answer_2" />
-                        @Html.DisplayFor(exItem => item.ClosedQuestions.Answer_2)
-                    </label>
-                </li>
-                <li>
-                    <label>
-                        <input type="radio" name="@item.ClosedQuestions.Question" value="@item.ClosedQuestions.Answer_3" />
-                        @Html.DisplayFor(exItem => item.ClosedQuestions.Answer_3)
-                    </label>
-                </li>
-                <li>
-                    <label>
-                        <input type="radio" name="@item.ClosedQuestions.Question" value="@item.ClosedQuestions.Answer_4" />
-                        @Html.DisplayFor(exItem => item.ClosedQuestions.Answer_4)
-                    </label>
-                </li>
-            </ol>
-        }
-        <input id ="FirstExamPart" type="submit" value="Next" class="btn-success"
-        asp-controller="Exams" asp-action="SetClosedQuestionsAnswers" asp-route-id="@Model" />
+        <div id="FrozenGlass">
+            @foreach (var item in Model.ExamClosedQuestions)
+            {
+                <div>
+                    <h3>
+                        <li> @Html.DisplayFor(exItem => item.ClosedQuestions.Question)</li>
+                    </h3>
+                </div> <br>
+                <ol class="option">
+                    <li>
+                        <label>
+                            <input type="radio" name="@item.ClosedQuestions.Question" value="@item.ClosedQuestions.Answer_1" />
+                            @Html.DisplayFor(exItem => item.ClosedQuestions.Answer_1)
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="@item.ClosedQuestions.Question" value="@item.ClosedQuestions.Answer_2" />
+                            @Html.DisplayFor(exItem => item.ClosedQuestions.Answer_2)
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="@item.ClosedQuestions.Question" value="@item.ClosedQuestions.Answer_3" />
+                            @Html.DisplayFor(exItem => item.ClosedQuestions.Answer_3)
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="@item.ClosedQuestions.Question" value="@item.ClosedQuestions.Answer_4" />
+                            @Html.DisplayFor(exItem => item.ClosedQuestions.Answer_4)
+                        </label>
+                    </li>
+                </ol>
+            }
+            <input id="FirstExamPart" type="submit" value="Next" class="btn-success"
+                   asp-controller="Exams" asp-action="SetClosedQuestionsAnswers" asp-route-id="@Model" />
+        </div>
     </form>
 
 </div>
