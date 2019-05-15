@@ -159,7 +159,7 @@ namespace ExamPlatform.Controllers
                         context.SaveChanges();
                     }
 
-                    SendEmail(ExamsID, context);
+                    //SendEmail(ExamsID, context);
                 }
                 return RedirectToAction("ShowStudentExamsToCheck");
             }
@@ -209,6 +209,56 @@ namespace ExamPlatform.Controllers
         /// <summary>Sends the email with informations associated with results of exams for each students.</summary>
         /// <param name="ExamIDList">The exam identifier list.</param>
         /// <param name="context">The context.</param>
+        public void SendEmail2(IFormCollection StudentData)
+        {
+            try
+            {
+                String getGrade = StudentData.ElementAt(5).Value;
+                String withoutZero = getGrade.Substring(0, 1);
+                double grade = Convert.ToDouble(withoutZero);
+
+                String getScore = StudentData.ElementAt(6).Value;
+                double score = Convert.ToDouble(getScore);
+
+                String getDate = StudentData.ElementAt(3).Value;
+                DateTime date = Convert.ToDateTime(getDate);
+
+                String maxExamScore = StudentData.ElementAt(7).Value;
+                double maxScore = Convert.ToDouble(maxExamScore);
+
+                UserEmailInfoModel user = new UserEmailInfoModel
+                (
+                StudentData.ElementAt(0).Value,
+                StudentData.ElementAt(1).Value,
+                StudentData.ElementAt(2).Value,
+                StudentData.ElementAt(4).Value,
+                grade,
+                date,
+                score,
+                maxScore
+                );
+
+
+                SmtpClient client = new SmtpClient("smtp.gmail.com");
+                client.EnableSsl = true;
+                client.Port = 587;
+                //client.UseDefaultCredentials = false;
+                client.Credentials = new NetworkCredential("Mail nadawcy", "HASŁO");
+
+                MailMessage mailMessage = new MailMessage();
+                mailMessage.From = new MailAddress(user.Email);
+                mailMessage.To.Add("Mail nadawcy");
+                mailMessage.Body = "Cześć " + user.Name + " " + user.Surname + ". Otrzymałeś ocenę: " + user.Grade + " z egzaminu '" + user.Course + "' odbytego dnia " + user.ExamDate + " . Twoja punktacja  " + user.Score + "/" + user.MaxScore;
+                mailMessage.Subject = "Wyniki egzaminu z '" + user.Course + "'.";
+
+                client.Send(mailMessage);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
         public void SendEmail(List<int>ExamIDList, ExamPlatformDbContext context)
         {
             try

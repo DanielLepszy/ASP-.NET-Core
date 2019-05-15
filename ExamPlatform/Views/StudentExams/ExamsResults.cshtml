@@ -21,16 +21,23 @@
         <tbody>
             @foreach (var x in Model)
             {
-            <tr>
-                <td>@x.Name</td>
-                <td>@x.Surname</td>
-                <td>@x.Email</td>
-                <td>@x.ExamDate</td>
-                <td>@x.Course</td>
-                <td>@x.Grade.0</td>
-                <td>@x.Score / @x.MaxScore</td>
-                <td><button type="button" class="btn btn-primary">Send Email</button></td>
-            </tr>
+            <form name="StudentData" asp-controller="StudentExams" asp-action="ShowAllCheckedExams">
+                <tr class="form-group">
+                    <td><input type="hidden" name="Name" value="@x.Name" />@x.Name</td>
+                    <td><input type="hidden" name="Surname" value="@x.Surname" />@x.Surname</td>
+                    <td><input type="hidden" name="Email" value="@x.Email" />@x.Email</td>
+                    <td><input type="hidden" name="ExamDate" value="@x.ExamDate" />@x.ExamDate</td>
+                    <td><input type="hidden" name="Course" value="@x.Course" />@x.Course</td>
+                    <td><input type="hidden" name="Grade" value="@x.Grade.0" />@x.Grade.0</td>
+                    <td><input type="hidden" name="Score" value="@x.Score" />@x.Score / @x.MaxScore</td>
+                    <input type="hidden" name="MaxScore" value="@x.MaxScore" />@x.MaxScore
+                    <td>
+                     <input type="submit" value="Send Email" class="btn btn-primary"
+                       asp-controller="StudentExams" asp-action="SendEmail2" />
+                     </td>
+                </tr>
+               
+            </form>
             }
         </tbody>
     </table>
