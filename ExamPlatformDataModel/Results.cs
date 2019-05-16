@@ -12,5 +12,6 @@ namespace ExamPlatformDataModel
         public double Score { get; set; }
         public double MaxExamPoints { get; set; }
         public double? Grade { get; set; }
+        public Boolean ifResultSent { get; set; }
     }
 }

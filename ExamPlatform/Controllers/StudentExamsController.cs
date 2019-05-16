@@ -209,10 +209,13 @@ namespace ExamPlatform.Controllers
         /// <summary>Sends the email with informations associated with results of exams for each students.</summary>
         /// <param name="ExamIDList">The exam identifier list.</param>
         /// <param name="context">The context.</param>
-        public void SendEmail2(IFormCollection StudentData)
+    public ActionResult SendEmail(IFormCollection StudentData)
+    {
+        using (var context = new ExamPlatformDbContext())
         {
             try
             {
+                
                 String getGrade = StudentData.ElementAt(5).Value;
                 String withoutZero = getGrade.Substring(0, 1);
                 double grade = Convert.ToDouble(withoutZero);
@@ -238,78 +241,43 @@ namespace ExamPlatform.Controllers
                 maxScore
                 );
 
+                //SmtpClient client = new SmtpClient("smtp.gmail.com");
+                //client.EnableSsl = true;
+                //client.Port = 587;
+                ////client.UseDefaultCredentials = false;
+                //client.Credentials = new NetworkCredential("Mail nadawcy", "HASŁO");
 
-                SmtpClient client = new SmtpClient("smtp.gmail.com");
-                client.EnableSsl = true;
-                client.Port = 587;
-                //client.UseDefaultCredentials = false;
-                client.Credentials = new NetworkCredential("Mail nadawcy", "HASŁO");
+                //MailMessage mailMessage = new MailMessage();
+                //mailMessage.From = new MailAddress(user.Email);
+                //mailMessage.To.Add(user.Email);
+                //mailMessage.Body = "Cześć " + user.Name + " " + user.Surname + ". Otrzymałeś ocenę: " + user.Grade + " z egzaminu '" + user.Course + "' odbytego dnia " + user.ExamDate + " . Twoja punktacja  " + user.Score + "/" + user.MaxScore;
+                //mailMessage.Subject = "Wyniki egzaminu z '" + user.Course + "'.";
 
-                MailMessage mailMessage = new MailMessage();
-                mailMessage.From = new MailAddress(user.Email);
-                mailMessage.To.Add("Mail nadawcy");
-                mailMessage.Body = "Cześć " + user.Name + " " + user.Surname + ". Otrzymałeś ocenę: " + user.Grade + " z egzaminu '" + user.Course + "' odbytego dnia " + user.ExamDate + " . Twoja punktacja  " + user.Score + "/" + user.MaxScore;
-                mailMessage.Subject = "Wyniki egzaminu z '" + user.Course + "'.";
+                //client.Send(mailMessage);
 
-                client.Send(mailMessage);
+               
+                    var studentResult = context.Exam
+                         .Include(e => e.ExamResult)
+                         .Include(a => a.Account)
+                        .Where(e => 
+                        e.DateOfExam.Date == user.ExamDate.Date &&
+                        e.DateOfExam.Hour == user.ExamDate.Hour &&
+                        e.DateOfExam.Minute == user.ExamDate.Minute)
+                        .Select(z => z.ExamResult).ToList();
 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
+                    studentResult.First().ifResultSent= true;
+
+                   context.Results.Update(studentResult.First());
+                   context.SaveChanges();
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                return RedirectToAction("ShowAllCheckedExams");
             }
         }
-        public void SendEmail(List<int>ExamIDList, ExamPlatformDbContext context)
-        {
-            try
-            {
-                List<UserEmailInfoModel> UserEmailList = new List<UserEmailInfoModel>();
-
-                foreach (var i in ExamIDList)
-                {
-                    var UserEmail = (from ex in context.Exam
-                                     where ex.ExamsID == i
-                                     join results in context.Results on ex.ExamResult.ExamID equals results.ExamID
-                                     join account in context.Account on ex.AccountID equals account.AccountsID
-                                     select new { account.Name, account.Surname, account.Email, ex.Course.CourseType, results.Grade, ex.DateOfExam, results.Score,results.MaxExamPoints }).Single();
-
-                   
-                    UserEmailInfoModel model = new UserEmailInfoModel
-                        (UserEmail.Name,
-                        UserEmail.Surname,
-                        UserEmail.Email,
-                        UserEmail.CourseType,
-                        UserEmail.Grade,
-                        UserEmail.DateOfExam,
-                        UserEmail.Score,
-                        UserEmail.MaxExamPoints);
-
-                    UserEmailList.Add(model);
-                }
-                foreach (var user in UserEmailList)
-                {
-
-                    SmtpClient client = new SmtpClient("smtp.gmail.com");
-                    client.EnableSsl = true;
-                    client.Port = 587;
-                    //client.UseDefaultCredentials = false;
-                    client.Credentials = new NetworkCredential("EMAIL NADAWCY","HASŁO");
-                
-                    MailMessage mailMessage = new MailMessage();
-                    mailMessage.From = new MailAddress("EMAIL NADAWCY");
-                    mailMessage.To.Add(user.Email);
-                    mailMessage.Body = "Cześć " + user.Name + " " + user.Surname + ". Otrzymałeś ocenę: " + user.Grade + " z egzaminu '" + user.Course + "' odbytego dnia " + user.ExamDate;
-                    mailMessage.Subject = "Wyniki egzaminu z '" + user.Course + "'.";
-                  
-                    client.Send(mailMessage);
-                }
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
-
         /// <summary>Shows all checked exams.</summary>
         /// <returns></returns>
         [HttpGet]
@@ -323,7 +291,7 @@ namespace ExamPlatform.Controllers
                                      where ex.ExamResult.Grade != null
                                      join results in context.Results on ex.ExamResult.ExamID equals results.ExamID
                                      join account in context.Account on ex.AccountID equals account.AccountsID
-                                     select new { account.Name, account.Surname, account.Email, ex.Course.CourseType, results.Grade, ex.DateOfExam, results.Score,results.MaxExamPoints }).ToList();
+                                     select new { account.Name, account.Surname, account.Email, ex.Course.CourseType, results.Grade, ex.DateOfExam, results.Score,results.MaxExamPoints,results.ifResultSent }).ToList();
 
                     List<UserEmailInfoModel> modelList = new List<UserEmailInfoModel>();
 
@@ -337,7 +305,8 @@ namespace ExamPlatform.Controllers
                         x.Grade,
                         x.DateOfExam,
                         x.Score,
-                        x.MaxExamPoints
+                        x.MaxExamPoints,
+                        x.ifResultSent
                       ))
                     );
                    return View("ExamsResults", modelList);

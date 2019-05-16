@@ -214,8 +214,8 @@ namespace ExamPlatform.Controllers
 
                     var ExamCQuestions = CreateExamClosedQuestions(CQuestions);
                     var ExamOQuestions = CreateExamOpenedQuestions(OQuestions);
-               
-                    
+
+
                     Exams exam = new Exams()
                     {
                         AmountClosedQuestions = CQuestions.Count(),
@@ -227,7 +227,7 @@ namespace ExamPlatform.Controllers
                         ExamOpenedQuestions = ExamOQuestions,
                         CourseID = SelectedCourse.CourseID,
                         AccountID = SelectedAccount.AccountsID,
-                        ExamResult = new Results()
+                        ExamResult = new Results() { ifResultSent = false }
                         
                     };
                     ExamCQuestions.ForEach(x => exam.ExamResult.MaxExamPoints += 1);

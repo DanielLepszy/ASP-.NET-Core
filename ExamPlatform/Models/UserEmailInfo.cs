@@ -12,9 +12,10 @@ namespace ExamPlatform.Models
         public double MaxScore { get; set; }
         public double? Grade { get; set; }
         public DateTime ExamDate { get; set; }
+        public Boolean IfEmailSent { get; set; }
 
 
-        public UserEmailInfoModel(String name, String surname, String email, String course, double? grade, DateTime examDate,double score, double maxScore)
+        public UserEmailInfoModel(String name, String surname, String email, String course, double? grade, DateTime examDate,double score, double maxScore, Boolean emailSent =false)
         {
             this.Name = name;
             this.Surname = surname;
@@ -24,6 +25,7 @@ namespace ExamPlatform.Models
             this.Score = score;
             this.MaxScore = maxScore;
             this.ExamDate = examDate;
+            this.IfEmailSent = emailSent;
         }
     }
 }

@@ -4,7 +4,6 @@
 }
 <div id="ExamResults">
     <h2>Results</h2>
-   
     <table class="table" id="tableResults">
         <thead>
             <tr>
@@ -14,15 +13,16 @@
                 <th>Exam Date</th>
                 <th>Course</th>
                 <th>Grade</th>
-                <th>Score / Max Score</th>
-                <th>Feedback</th>
+                <th>Score</th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var x in Model)
             {
-            <form name="StudentData" asp-controller="StudentExams" asp-action="ShowAllCheckedExams">
-                <tr class="form-group">
+            <form name="StudentData" asp-   controller="StudentExams" asp-action="ShowAllCheckedExams">
+                <tr>
                     <td><input type="hidden" name="Name" value="@x.Name" />@x.Name</td>
                     <td><input type="hidden" name="Surname" value="@x.Surname" />@x.Surname</td>
                     <td><input type="hidden" name="Email" value="@x.Email" />@x.Email</td>
@@ -30,11 +30,26 @@
                     <td><input type="hidden" name="Course" value="@x.Course" />@x.Course</td>
                     <td><input type="hidden" name="Grade" value="@x.Grade.0" />@x.Grade.0</td>
                     <td><input type="hidden" name="Score" value="@x.Score" />@x.Score / @x.MaxScore</td>
-                    <input type="hidden" name="MaxScore" value="@x.MaxScore" />@x.MaxScore
+                    <input type="hidden" name="MaxScore" value="@x.MaxScore" />
                     <td>
-                     <input type="submit" value="Send Email" class="btn btn-primary"
-                       asp-controller="StudentExams" asp-action="SendEmail2" />
-                     </td>
+                        <input type="submit" value="Send Email" class="btn btn-primary"
+                               asp-controller="StudentExams" asp-action="SendEmail" />
+                    </td>
+                    <td>
+                        @if (x.IfEmailSent == true)
+                        {
+                            <label class="btn btn-success active">
+                                <span class="glyphicon glyphicon-ok"></span>
+                            </label>
+                        }
+                        @if (x.IfEmailSent == false)
+                        {
+                            <label class="btn btn-warning">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </label>
+                        }
+
+                    </td>
                 </tr>
                
             </form>

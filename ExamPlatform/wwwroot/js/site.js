@@ -13,4 +13,5 @@
     }
     prevScrollpos = currentScrollPos;
 }
+document.getElementsByClassName("btn").style.display = 'none';
 

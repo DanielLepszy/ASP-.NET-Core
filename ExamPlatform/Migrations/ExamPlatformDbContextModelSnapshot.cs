@@ -193,6 +193,8 @@ namespace ExamPlatform.Migrations
 
                     b.Property<double>("Score");
 
+                    b.Property<bool>("ifResultSent");
+
                     b.HasKey("ResultsID");
 
                     b.HasIndex("ExamID")
