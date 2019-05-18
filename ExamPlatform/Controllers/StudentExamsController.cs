@@ -10,6 +10,8 @@ using ExamPlatformDataModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
+using System.Text;
 
 namespace ExamPlatform.Controllers
 {
@@ -240,22 +242,39 @@ namespace ExamPlatform.Controllers
                 score,
                 maxScore
                 );
+                  
+                    string path = @"C:\Users\Admin\Desktop\MailMessageTemplate.txt";
+                   
+                    //if (!System.IO.File.Exists(path))
+                    //{
+                    //    // Create a file to write to.
+                    //    string createText = "Hello and Welcome" + Environment.NewLine;
+                    //    System.IO.File.WriteAllText(path, createText, Encoding.UTF8);
+                    //}
+                    using (StreamReader sr = System.IO.File.OpenText(path))
+                    {
+                        string s;
+                        while ((s = sr.ReadLine()) != null)
+                        {
+                            Console.WriteLine(s);
+                        }
+                    }
 
-                //SmtpClient client = new SmtpClient("smtp.gmail.com");
-                //client.EnableSsl = true;
-                //client.Port = 587;
-                ////client.UseDefaultCredentials = false;
-                //client.Credentials = new NetworkCredential("Mail nadawcy", "HASŁO");
+                    SmtpClient client = new SmtpClient("smtp.gmail.com");
+                    client.EnableSsl = true;
+                    client.Port = 587;
+                    //client.UseDefaultCredentials = false;
+                    client.Credentials = new NetworkCredential("Mail nadawcy", "HASŁO");
 
-                //MailMessage mailMessage = new MailMessage();
-                //mailMessage.From = new MailAddress(user.Email);
-                //mailMessage.To.Add(user.Email);
-                //mailMessage.Body = "Cześć " + user.Name + " " + user.Surname + ". Otrzymałeś ocenę: " + user.Grade + " z egzaminu '" + user.Course + "' odbytego dnia " + user.ExamDate + " . Twoja punktacja  " + user.Score + "/" + user.MaxScore;
-                //mailMessage.Subject = "Wyniki egzaminu z '" + user.Course + "'.";
+                    MailMessage mailMessage = new MailMessage();
+                    mailMessage.From = new MailAddress(user.Email);
+                    mailMessage.To.Add(user.Email);
+                    mailMessage.Body = "Cześć " + user.Name + " " + user.Surname + ". Otrzymałeś ocenę: " + user.Grade + " z egzaminu '" + user.Course + "' odbytego dnia " + user.ExamDate + " . Twoja punktacja  " + user.Score + "/" + user.MaxScore;
+                    mailMessage.Subject = "Wyniki egzaminu z '" + user.Course + "'.";
 
-                //client.Send(mailMessage);
+                    client.Send(mailMessage);
 
-               
+
                     var studentResult = context.Exam
                          .Include(e => e.ExamResult)
                          .Include(a => a.Account)

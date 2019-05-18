@@ -10,6 +10,8 @@ using ExamPlatformDataModel;
 using ExamPlatform.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
+using System.IO;
+using System.Text;
 
 namespace ExamPlatform.Controllers
 {
@@ -272,17 +274,42 @@ namespace ExamPlatform.Controllers
                     context.Account.Add(admin);
                     context.SaveChanges();
                 }
+
 }
 
-
-
-
-DateTime loaclDate = DateTime.Now;
+                DateTime loaclDate = DateTime.Now;
                 CultureInfo eng = new CultureInfo("en-US");
-
                 var dates = loaclDate.DayOfWeek.ToString() + ", " + loaclDate.Day.ToString("d2") + " " + loaclDate.ToString("MMMM", eng);
 
-                return View("Index",dates);
+               
+            try
+            {
+                string path = @"C:\Users\Admin\Desktop\MailMessageTemplate.txt";
+                // Create an instance of StreamReader to read from a file.
+                // The using statement also closes the StreamReader.
+                using (StreamReader sr = new StreamReader(path, Encoding.GetEncoding("Windows-1250")))
+                {
+                    string line;
+                   
+                    // Read and display lines from the file until the end of 
+                    // the file is reached.
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                       //var text = System.IO.File.ReadAllText(path, Encoding.GetEncoding("Windows-1250"));
+                        string x = line;
+                        Console.WriteLine(line);
+                        
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                // Let the user know what went wrong.
+                Console.WriteLine("The file could not be read:");
+                Console.WriteLine(e.Message);
+            }
+
+            return View("Index",dates);
         }
         public IActionResult About()
         {
