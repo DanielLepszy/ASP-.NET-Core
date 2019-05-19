@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using System.IO;
 using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ExamPlatform.Controllers
 {
@@ -263,7 +265,8 @@ namespace ExamPlatform.Controllers
 
                                  new OpenedQuestions()
                             {
-                                Question ="Projekt to . . .  przedsięwzięcie podjęte, aby stworzyć . . . produkt, usługę lub",                                 MaxPoints = 1,
+                                Question ="Projekt to . . .  przedsięwzięcie podjęte, aby stworzyć . . . produkt, usługę lub",
+                                MaxPoints = 1,
 
                             }
                         }
@@ -274,40 +277,26 @@ namespace ExamPlatform.Controllers
                     context.Account.Add(admin);
                     context.SaveChanges();
                 }
+            }
 
-}
+            string path = @"C:\Users\Admin\Desktop\Finish\ASP-.NET-Core\ExamPlatform\template.json";
+            JObject o1 = JObject.Parse(System.IO.File.ReadAllText(path));
 
+            // read JSON directly from a file
+            using (StreamReader file = System.IO.File.OpenText(path))
+            using (JsonTextReader reader = new JsonTextReader(file))
+            {
+                JObject o2 = (JObject)JToken.ReadFrom(reader);
+                var z = o2.GetValue("messageSubject");
+                var zz = o2.GetValue("@messageSubject");
+                //var x = o2.Parse(o2.)["@STARTDATE"];
+            }
+            
+            //using (StreamReader sr = new StreamReader(path, Encoding.GetEncoding("Windows-1250")))
+          
                 DateTime loaclDate = DateTime.Now;
                 CultureInfo eng = new CultureInfo("en-US");
                 var dates = loaclDate.DayOfWeek.ToString() + ", " + loaclDate.Day.ToString("d2") + " " + loaclDate.ToString("MMMM", eng);
-
-               
-            try
-            {
-                string path = @"C:\Users\Admin\Desktop\MailMessageTemplate.txt";
-                // Create an instance of StreamReader to read from a file.
-                // The using statement also closes the StreamReader.
-                using (StreamReader sr = new StreamReader(path, Encoding.GetEncoding("Windows-1250")))
-                {
-                    string line;
-                   
-                    // Read and display lines from the file until the end of 
-                    // the file is reached.
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                       //var text = System.IO.File.ReadAllText(path, Encoding.GetEncoding("Windows-1250"));
-                        string x = line;
-                        Console.WriteLine(line);
-                        
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                // Let the user know what went wrong.
-                Console.WriteLine("The file could not be read:");
-                Console.WriteLine(e.Message);
-            }
 
             return View("Index",dates);
         }

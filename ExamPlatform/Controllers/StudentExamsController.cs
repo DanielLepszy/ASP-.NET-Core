@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 using System.Text;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace ExamPlatform.Controllers
 {
@@ -242,37 +244,10 @@ namespace ExamPlatform.Controllers
                 score,
                 maxScore
                 );
-                  
-                    string path = @"C:\Users\Admin\Desktop\MailMessageTemplate.txt";
-                   
-                    //if (!System.IO.File.Exists(path))
-                    //{
-                    //    // Create a file to write to.
-                    //    string createText = "Hello and Welcome" + Environment.NewLine;
-                    //    System.IO.File.WriteAllText(path, createText, Encoding.UTF8);
-                    //}
-                    using (StreamReader sr = System.IO.File.OpenText(path))
-                    {
-                        string s;
-                        while ((s = sr.ReadLine()) != null)
-                        {
-                            Console.WriteLine(s);
-                        }
-                    }
 
-                    SmtpClient client = new SmtpClient("smtp.gmail.com");
-                    client.EnableSsl = true;
-                    client.Port = 587;
-                    //client.UseDefaultCredentials = false;
-                    client.Credentials = new NetworkCredential("Mail nadawcy", "HASŁO");
+                    var messageTemplate = RenderMessageTemplateFromFile();
+                    sendMessage("oneshout2@gmail.com","","", user, messageTemplate);
 
-                    MailMessage mailMessage = new MailMessage();
-                    mailMessage.From = new MailAddress(user.Email);
-                    mailMessage.To.Add(user.Email);
-                    mailMessage.Body = "Cześć " + user.Name + " " + user.Surname + ". Otrzymałeś ocenę: " + user.Grade + " z egzaminu '" + user.Course + "' odbytego dnia " + user.ExamDate + " . Twoja punktacja  " + user.Score + "/" + user.MaxScore;
-                    mailMessage.Subject = "Wyniki egzaminu z '" + user.Course + "'.";
-
-                    client.Send(mailMessage);
 
 
                     var studentResult = context.Exam
@@ -297,6 +272,38 @@ namespace ExamPlatform.Controllers
                 return RedirectToAction("ShowAllCheckedExams");
             }
         }
+    public JObject RenderMessageTemplateFromFile()
+    {
+            string path = @"C:\Users\Admin\Desktop\Finish\ASP-.NET-Core\ExamPlatform\template.json";
+            JObject o1 = JObject.Parse(System.IO.File.ReadAllText(path));
+
+            // read JSON directly from a file
+            using (StreamReader file = System.IO.File.OpenText(path))
+            using (JsonTextReader reader = new JsonTextReader(file))
+            {
+                JObject o2 = (JObject)JToken.ReadFrom(reader);
+                return o2;
+            }
+    }
+        
+
+        private void sendMessage(String emailFrom, String password, String emailTo, UserEmailInfoModel user, JObject messageBody)
+        {
+            SmtpClient client = new SmtpClient("smtp.gmail.com");
+            client.EnableSsl = true;
+            client.Port = 587;
+            //client.UseDefaultCredentials = false;
+            client.Credentials = new NetworkCredential(emailFrom, password);
+
+            MailMessage mailMessage = new MailMessage();
+            mailMessage.From = new MailAddress(emailFrom);
+            mailMessage.To.Add(emailTo);
+            mailMessage.Body = ""; //"Cześć " + user.Name + " " + user.Surname + ". Otrzymałeś ocenę: " + user.Grade + " z egzaminu '" + user.Course + "' odbytego dnia " + user.ExamDate + " . Twoja punktacja  " + user.Score + "/" + user.MaxScore;
+            mailMessage.Subject = ""; //"Wyniki egzaminu z '" + user.Course + "'.";
+
+            client.Send(mailMessage);
+        }
+
         /// <summary>Shows all checked exams.</summary>
         /// <returns></returns>
         [HttpGet]
