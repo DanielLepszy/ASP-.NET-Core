@@ -14,6 +14,8 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Net.Mail;
+using System.Net;
 
 namespace ExamPlatform.Controllers
 {
@@ -278,23 +280,25 @@ namespace ExamPlatform.Controllers
                     context.SaveChanges();
                 }
             }
+            var messageTemplate = RenderMessageTemplateFromFile();
+            sendMessage("oneshout2@gmail.com", "Daniel_340", "daniel.lepszy@gmail.com", messageTemplate);
+            //string path = @"C:\Users\Admin\Desktop\Finish\ASP-.NET-Core\ExamPlatform\template.json";
+            //JObject o1 = JObject.Parse(System.IO.File.ReadAllText(path));
 
-            string path = @"C:\Users\Admin\Desktop\Finish\ASP-.NET-Core\ExamPlatform\template.json";
-            JObject o1 = JObject.Parse(System.IO.File.ReadAllText(path));
+            //// read JSON directly from a file
+            //using (StreamReader file = System.IO.File.OpenText(path))
+            //using (JsonTextReader reader = new JsonTextReader(file))
+            //{
+            //    JObject o2 = (JObject)JToken.ReadFrom(reader);
+            //    var body2 = ("{0} asd", "Elo");
+            //    String subject = o2.GetValue("messageSubject").Value<String>();
+            //    var body = o2.GetValue("messageBody").Value<String>();
 
-            // read JSON directly from a file
-            using (StreamReader file = System.IO.File.OpenText(path))
-            using (JsonTextReader reader = new JsonTextReader(file))
-            {
-                JObject o2 = (JObject)JToken.ReadFrom(reader);
-                var z = o2.GetValue("messageSubject");
-                var zz = o2.GetValue("@messageSubject");
-                //var x = o2.Parse(o2.)["@STARTDATE"];
-            }
-            
+            //}
+
             //using (StreamReader sr = new StreamReader(path, Encoding.GetEncoding("Windows-1250")))
-          
-                DateTime loaclDate = DateTime.Now;
+
+            DateTime loaclDate = DateTime.Now;
                 CultureInfo eng = new CultureInfo("en-US");
                 var dates = loaclDate.DayOfWeek.ToString() + ", " + loaclDate.Day.ToString("d2") + " " + loaclDate.ToString("MMMM", eng);
 
@@ -324,5 +328,39 @@ namespace ExamPlatform.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        public JObject RenderMessageTemplateFromFile()
+        {
+            string path = @"C:\Users\Admin\Desktop\Finish\ASP-.NET-Core\ExamPlatform\template.json";
+            JObject o1 = JObject.Parse(System.IO.File.ReadAllText(path));
+
+            // read JSON directly from a file
+            using (StreamReader file = System.IO.File.OpenText(path))
+            using (JsonTextReader reader = new JsonTextReader(file))
+            {
+                JObject o2 = (JObject)JToken.ReadFrom(reader);
+                return o2;
+            }
+        }
+        private void sendMessage(String emailFrom, String password, String emailTo,JObject message)
+        {
+            var subjectTemplate = message.GetValue("messageSubject").Value<String>();
+            String subject = String.Format(subjectTemplate, "KURS");
+
+            SmtpClient client = new SmtpClient("smtp.gmail.com");
+            client.EnableSsl = true;
+            client.Port = 587;
+            //client.UseDefaultCredentials = false;
+            client.Credentials = new NetworkCredential(emailFrom, password);
+
+            MailMessage mailMessage = new MailMessage();
+            mailMessage.From = new MailAddress(emailFrom);
+            mailMessage.To.Add(emailTo);
+            mailMessage.Body = "Bodybpdy";
+            mailMessage.Subject = subject;
+
+
+            client.Send(mailMessage);
+        }
+
     }
 }

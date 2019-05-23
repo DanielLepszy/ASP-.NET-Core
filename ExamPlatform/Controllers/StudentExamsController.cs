@@ -245,10 +245,9 @@ namespace ExamPlatform.Controllers
                 maxScore
                 );
 
-                    var messageTemplate = RenderMessageTemplateFromFile();
-                    sendMessage("oneshout2@gmail.com","","", user, messageTemplate);
-
-
+                    JObject messageTemplate = RenderMessageTemplateFromFile();
+                    JObject emailAccount = RenderEmailAccount();
+                    sendMessage(emailAccount, user, messageTemplate);
 
                     var studentResult = context.Exam
                          .Include(e => e.ExamResult)
@@ -285,22 +284,40 @@ namespace ExamPlatform.Controllers
                 return o2;
             }
     }
-        
+    public JObject RenderEmailAccount()
+    {
+        string path = @"C:\Users\Admin\Desktop\Finish\ASP-.NET-Core\ExamPlatform\emailAccount.json";
+        JObject o1 = JObject.Parse(System.IO.File.ReadAllText(path));
 
-        private void sendMessage(String emailFrom, String password, String emailTo, UserEmailInfoModel user, JObject messageBody)
+        // read JSON directly from a file
+        using (StreamReader file = System.IO.File.OpenText(path))
+        using (JsonTextReader reader = new JsonTextReader(file))
         {
+            JObject o2 = (JObject)JToken.ReadFrom(reader);
+            return o2;
+        }
+    }
+        private void sendMessage(JObject emailAccount, UserEmailInfoModel user, JObject message)
+        {
+            String subjectTemplate = message.GetValue("messageSubject").Value<String>();
+            String bodyTemplate = message.GetValue("messageBody").Value<String>();
+            String email = emailAccount.GetValue("emailAccount").Value<String>();
+            String emailPass = emailAccount.GetValue("password").Value<String>();
+            String subject = String.Format(subjectTemplate, user.Name, user.Surname,user.Grade,user.Course,user.ExamDate,user.Score,user.MaxScore);
+            String body = String.Format(bodyTemplate, user.Course);
+
             SmtpClient client = new SmtpClient("smtp.gmail.com");
             client.EnableSsl = true;
             client.Port = 587;
             //client.UseDefaultCredentials = false;
-            client.Credentials = new NetworkCredential(emailFrom, password);
+            client.Credentials = new NetworkCredential(email, emailPass);
 
             MailMessage mailMessage = new MailMessage();
-            mailMessage.From = new MailAddress(emailFrom);
-            mailMessage.To.Add(emailTo);
-            mailMessage.Body = ""; //"Cześć " + user.Name + " " + user.Surname + ". Otrzymałeś ocenę: " + user.Grade + " z egzaminu '" + user.Course + "' odbytego dnia " + user.ExamDate + " . Twoja punktacja  " + user.Score + "/" + user.MaxScore;
-            mailMessage.Subject = ""; //"Wyniki egzaminu z '" + user.Course + "'.";
-
+            mailMessage.From = new MailAddress(email);
+            mailMessage.To.Add(user.Email);
+            mailMessage.Body = body;
+            mailMessage.Subject = subject; 
+            
             client.Send(mailMessage);
         }
 
