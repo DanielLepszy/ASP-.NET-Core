@@ -280,8 +280,8 @@ namespace ExamPlatform.Controllers
                     context.SaveChanges();
                 }
             }
-            var messageTemplate = RenderMessageTemplateFromFile();
-            sendMessage("oneshout2@gmail.com", "Daniel_340", "daniel.lepszy@gmail.com", messageTemplate);
+            //var messageTemplate = RenderMessageTemplateFromFile();
+            //sendMessage("oneshout2@gmail.com", "Daniel_340", "daniel.lepszy@gmail.com", messageTemplate);
             //string path = @"C:\Users\Admin\Desktop\Finish\ASP-.NET-Core\ExamPlatform\template.json";
             //JObject o1 = JObject.Parse(System.IO.File.ReadAllText(path));
 
@@ -328,39 +328,39 @@ namespace ExamPlatform.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        public JObject RenderMessageTemplateFromFile()
-        {
-            string path = @"C:\Users\Admin\Desktop\Finish\ASP-.NET-Core\ExamPlatform\template.json";
-            JObject o1 = JObject.Parse(System.IO.File.ReadAllText(path));
+        //public JObject RenderMessageTemplateFromFile()
+        //{
+        //    string path = @"C:\Users\Admin\Desktop\Finish\ASP-.NET-Core\ExamPlatform\template.json";
+        //    JObject o1 = JObject.Parse(System.IO.File.ReadAllText(path));
 
-            // read JSON directly from a file
-            using (StreamReader file = System.IO.File.OpenText(path))
-            using (JsonTextReader reader = new JsonTextReader(file))
-            {
-                JObject o2 = (JObject)JToken.ReadFrom(reader);
-                return o2;
-            }
-        }
-        private void sendMessage(String emailFrom, String password, String emailTo,JObject message)
-        {
-            var subjectTemplate = message.GetValue("messageSubject").Value<String>();
-            String subject = String.Format(subjectTemplate, "KURS");
+        //    // read JSON directly from a file
+        //    using (StreamReader file = System.IO.File.OpenText(path))
+        //    using (JsonTextReader reader = new JsonTextReader(file))
+        //    {
+        //        JObject o2 = (JObject)JToken.ReadFrom(reader);
+        //        return o2;
+        //    }
+        //}
+        //private void sendMessage(String emailFrom, String password, String emailTo,JObject message)
+        //{
+        //    var subjectTemplate = message.GetValue("messageSubject").Value<String>();
+        //    String subject = String.Format(subjectTemplate, "KURS");
 
-            SmtpClient client = new SmtpClient("smtp.gmail.com");
-            client.EnableSsl = true;
-            client.Port = 587;
-            //client.UseDefaultCredentials = false;
-            client.Credentials = new NetworkCredential(emailFrom, password);
+        //    SmtpClient client = new SmtpClient("smtp.gmail.com");
+        //    client.EnableSsl = true;
+        //    client.Port = 587;
+        //    //client.UseDefaultCredentials = false;
+        //    client.Credentials = new NetworkCredential(emailFrom, password);
 
-            MailMessage mailMessage = new MailMessage();
-            mailMessage.From = new MailAddress(emailFrom);
-            mailMessage.To.Add(emailTo);
-            mailMessage.Body = "Bodybpdy";
-            mailMessage.Subject = subject;
+        //    MailMessage mailMessage = new MailMessage();
+        //    mailMessage.From = new MailAddress(emailFrom);
+        //    mailMessage.To.Add(emailTo);
+        //    mailMessage.Body = "Bodybpdy";
+        //    mailMessage.Subject = subject;
 
 
-            client.Send(mailMessage);
-        }
+        //    client.Send(mailMessage);
+        //}
 
     }
 }

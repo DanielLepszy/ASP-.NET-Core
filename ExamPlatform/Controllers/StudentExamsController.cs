@@ -219,7 +219,6 @@ namespace ExamPlatform.Controllers
         {
             try
             {
-                
                 String getGrade = StudentData.ElementAt(5).Value;
                 String withoutZero = getGrade.Substring(0, 1);
                 double grade = Convert.ToDouble(withoutZero);
@@ -247,7 +246,7 @@ namespace ExamPlatform.Controllers
 
                     JObject messageTemplate = RenderMessageTemplateFromFile();
                     JObject emailAccount = RenderEmailAccount();
-                    sendMessage(emailAccount, user, messageTemplate);
+                    var purveyed = sendMessage(emailAccount, user, messageTemplate);
 
                     var studentResult = context.Exam
                          .Include(e => e.ExamResult)
@@ -258,7 +257,7 @@ namespace ExamPlatform.Controllers
                         e.DateOfExam.Minute == user.ExamDate.Minute)
                         .Select(z => z.ExamResult).ToList();
 
-                    studentResult.First().ifResultSent= true;
+                    studentResult.First().ifResultSent= purveyed;
 
                    context.Results.Update(studentResult.First());
                    context.SaveChanges();
@@ -271,20 +270,21 @@ namespace ExamPlatform.Controllers
                 return RedirectToAction("ShowAllCheckedExams");
             }
         }
-    public JObject RenderMessageTemplateFromFile()
+        private JObject RenderMessageTemplateFromFile()
     {
             string path = @"C:\Users\Admin\Desktop\Finish\ASP-.NET-Core\ExamPlatform\template.json";
-            JObject o1 = JObject.Parse(System.IO.File.ReadAllText(path));
+            JObject o1 = JObject.Parse(System.IO.File.ReadAllText(path,Encoding.GetEncoding("Windows-1250")));
 
             // read JSON directly from a file
-            using (StreamReader file = System.IO.File.OpenText(path))
+            using (StreamReader file = new StreamReader(path, Encoding.GetEncoding("Windows-1250")))
+            //StreamReader file = System.IO.File.OpenText(path)) 
             using (JsonTextReader reader = new JsonTextReader(file))
             {
                 JObject o2 = (JObject)JToken.ReadFrom(reader);
                 return o2;
             }
     }
-    public JObject RenderEmailAccount()
+        private JObject RenderEmailAccount()
     {
         string path = @"C:\Users\Admin\Desktop\Finish\ASP-.NET-Core\ExamPlatform\emailAccount.json";
         JObject o1 = JObject.Parse(System.IO.File.ReadAllText(path));
@@ -297,14 +297,14 @@ namespace ExamPlatform.Controllers
             return o2;
         }
     }
-        private void sendMessage(JObject emailAccount, UserEmailInfoModel user, JObject message)
+        private bool sendMessage(JObject emailAccount, UserEmailInfoModel user, JObject message)
         {
             String subjectTemplate = message.GetValue("messageSubject").Value<String>();
             String bodyTemplate = message.GetValue("messageBody").Value<String>();
             String email = emailAccount.GetValue("emailAccount").Value<String>();
             String emailPass = emailAccount.GetValue("password").Value<String>();
-            String subject = String.Format(subjectTemplate, user.Name, user.Surname,user.Grade,user.Course,user.ExamDate,user.Score,user.MaxScore);
-            String body = String.Format(bodyTemplate, user.Course);
+            String subject = String.Format(subjectTemplate, user.Course);
+            String body = String.Format(bodyTemplate, user.Name, user.Surname, user.Grade, user.Course, user.ExamDate, user.Score, user.MaxScore);
 
             SmtpClient client = new SmtpClient("smtp.gmail.com");
             client.EnableSsl = true;
@@ -316,9 +316,18 @@ namespace ExamPlatform.Controllers
             mailMessage.From = new MailAddress(email);
             mailMessage.To.Add(user.Email);
             mailMessage.Body = body;
-            mailMessage.Subject = subject; 
-            
-            client.Send(mailMessage);
+            mailMessage.Subject = subject;
+
+            try
+            {
+                client.Send(mailMessage);
+                return true;
+            }catch(SmtpFailedRecipientException ex)
+            {
+                Console.WriteLine("Message was not send");
+                return false;
+            }
+
         }
 
         /// <summary>Shows all checked exams.</summary>

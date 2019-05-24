@@ -1,4 +1,4 @@
 {
-"messageBody":"Czeœæ {0} {1}. Otrzyma³eœ ocenê: {2} z egzaminu {3} odbytego dnia {4} .Twoja punktacja  {5}/{6}.", 
+"messageBody":"Czeœæ {0} {1}, \n\n Otrzyma³eœ ocenê: {2}.0 z egzaminu {3} odbytego dnia {4} .Twoja punktacja  {5}pkt/{6}pkt. \n W razie dodatkowych pytañ, proszê o kontakt drog¹ mailow¹. \n\n Pozdrawiam \n Grzegorz Glonek", 
 "messageSubject":"Wyniki egzaminu z {0}." 
 }

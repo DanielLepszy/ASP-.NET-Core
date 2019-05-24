@@ -6,12 +6,13 @@
 </h2>
 <form asp-controller="Course" asp-action="ShowCourses">
 
-    <select class="btn btn-default" asp-for="CourseID"
-            asp-items="@(new SelectList(Model.Courses,"CourseID","CourseType"))"></select>
+    <select id="courseSelect" class="form-control asp-for="CourseID" size="1" 
+            asp-items="@(new SelectList(Model.Courses,"CourseID","CourseType"))">
+</select>
  
         <input type="submit" class="btn btn-default" value="Select"
                asp-controller="Exams" asp-action="ShowExam" />
-
+      
 </form>
 
 
