@@ -8,19 +8,20 @@
 <div id="StudentExamDiv">
     <h1>@x.StudentName @x.StudentSurname</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Opened Question</th>
-                <th scope="col">Answer</th>
-                <th scope="col">Points</th>
-                <th scope="col">Max</th>
-            </tr>
-        </thead>
+    <form id="OpenedQuestionsForm" name="AnswersForm" asp-controller="Exams" asp-action="ShowOpenedQuestions">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Opened Question</th>
+                    <th scope="col">Answer</th>
+                    <th scope="col">Points</th>
+                    <th scope="col">Max</th>
+                </tr>
+            </thead>
 
-        <tbody>
-            <form id="OpenedQuestionsForm" name="AnswersForm" asp-controller="Exams" asp-action="ShowOpenedQuestions">
+            <tbody>
+
 
                 @foreach (var z in x.SingleStudentExam)
                 {
@@ -36,14 +37,13 @@
 
                 }
 
-                <input type="submit" value="Submit" class="btn btn-default"
-                       asp-controller="StudentExams" asp-action="SetPointsForOpenedQuestionsToStudent" />
+            </tbody>
+        </table>
 
-            </form>
-
-        </tbody>
-    </table>
-    <hr />
+        <input type="submit" value="Submit" class="btn btn-primary btn-lg" id="sumbitPointsButton"
+               asp-controller="StudentExams" asp-action="SetPointsForOpenedQuestionsToStudent" />
+    </form>
+  
 </div>
      }
 }

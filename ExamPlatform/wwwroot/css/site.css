@@ -151,11 +151,29 @@
     padding-right:15px;
     left:0%;
 }
-#FirstPartExam {
-    border: solid white 1px;
-    padding-left:30px;
-    border-radius:2%;
+
+#LogInDiv {
+    position: absolute;
+    width: 70%;
+    left: 50%;
+    transform: translate(-50%,50%);
+    border: 1px solid black;
+    padding: 35px;
+    background-color:rgba(0, 0, 0, 0.72);
+   
 }
+    #LogInDiv h1,
+    #LogInDiv h2,
+    #LogInDiv h3
+    {
+        text-align: center;
+    }
+
+    #FirstPartExam {
+        border: solid white 1px;
+        padding-left: 30px;
+        border-radius: 2%;
+    }
 #ClosedQuestionsForm li {
     list-style:georgian;
    
@@ -199,7 +217,7 @@
 
     #FrozenGlass:before,
     #ExamFinishedInfo:before
-    {
+   {
         z-index: -1;
         content: '';
         border-radius: 5%;
@@ -210,14 +228,27 @@
         background-color: rgba(29, 27, 27, 0.61);
         filter: blur(1.5rem);
     }
-
-#StudentExamDiv
-{
+#courseSelect{
+    width:30%;   
+}
+#submitNewExam {
+    margin-top: 16px;
+}
+#StudentExamDiv {
     background: inherit;
     width: 99%;
     overflow: hidden;
     position: relative;
-    border-radius: 5%;
+    /*border-radius: 5%;*/
+}
+#StudentExamDiv {
+    position: relative;
+    padding-bottom:50px;
+    /*overflow:visible;*/
+}
+#sumbitPointsButton {
+    position: absolute;
+    right: 20px;
 }
 .table tr {
     background-color: rgba(0, 0, 0, 0.69);
