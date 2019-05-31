@@ -10,6 +10,10 @@ namespace ExamPlatform.EntityConfiguration
 {
     public class ExamOpenedQuestionsConfiguration : IEntityTypeConfiguration<ExamOpenedQuestions>
     {
+        /// <summary>
+        /// <para> Configures relations many to one between exam opened question to single exam / opened question.</para>
+        /// </summary>
+        /// <param name="builder">The builder to be used to configure the entity type.</param>
         public void Configure(EntityTypeBuilder<ExamOpenedQuestions> builder)
         {
 

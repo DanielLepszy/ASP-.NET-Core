@@ -18,8 +18,6 @@ namespace ExamPlatform.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ExamPlatformDatabase;Trusted_Connection=True;MultipleActiveResultSets=true;");
-            // optionsBuilder.UseLazyLoadingProxies();
-            // "AttachDbFilename = C:\\Users\\Admin\\ExamPlatformDB2.mdf"
         }
 
         public DbSet<Accounts> Account { get; set; }

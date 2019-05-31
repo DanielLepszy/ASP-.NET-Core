@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 namespace ExamPlatform.Logger
 {
+    /// <summary>Set singleton pattern to use logger in every place in app 
+    /// without initialization a new logger object every time</summary>
     public class SingletonFirst
     {
         private static SingletonFirst _instance;

@@ -1,26 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ExamPlatform.Models;
 using System.Globalization;
-using ExamPlatformDataModel;
-using ExamPlatform.Data;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authorization;
-using System.IO;
-using System.Text;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Net.Mail;
-using System.Net;
 using log4net;
-using System.Reflection;
-using log4net.Config;
 using ExamPlatform.Logger;
-using System.Security.Cryptography;
+
 
 namespace ExamPlatform.Controllers
 {

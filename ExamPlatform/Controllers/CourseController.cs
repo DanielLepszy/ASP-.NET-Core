@@ -16,6 +16,7 @@ namespace ExamPlatform.Controllers
     public class CourseController : Controller
     {
         ILog logger = SingletonFirst.Instance.GetLogger();
+
         /// <summary>Shows the available courses for students.</summary>
         /// <returns></returns>
         [HttpGet]

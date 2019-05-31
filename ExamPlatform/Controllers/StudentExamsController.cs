@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Threading.Tasks;
 using ExamPlatform.Data;
 using ExamPlatform.Models;
 using ExamPlatformDataModel;
@@ -24,6 +23,10 @@ namespace ExamPlatform.Controllers
     public class StudentExamsController : Controller
     {
         ILog logger = SingletonFirst.Instance.GetLogger();
+        /// <summary>Decrypts the string.
+        /// It's use to descrypt email account password</summary>
+        /// <param name="cipherText">The cipher text.</param>
+        /// <returns></returns>
         public static string DecryptString(string cipherText)
         {
             string keyString = "E546C8DF278CD5931069B522E695D4F2";
@@ -251,7 +254,7 @@ namespace ExamPlatform.Controllers
         /// <summary>Sends the email with informations associated with results of exams for each students.</summary>
         /// <param name="ExamIDList">The exam identifier list.</param>
         /// <param name="context">The context.</param>
-    public ActionResult SendEmail(IFormCollection StudentData)
+        public ActionResult SendEmail(IFormCollection StudentData)
     {
         using (var context = new ExamPlatformDbContext())
         {
@@ -283,7 +286,7 @@ namespace ExamPlatform.Controllers
                 );
 
                     JObject messageTemplate = RenderMessageTemplateFromFile();
-                    Dictionary<string,string> emailAccount = RenderEmailAccount();
+                    Dictionary<string,string> emailAccount = GetEmailAccountFromDB();
                     var purveyed = sendMessage(emailAccount, user, messageTemplate);
 
                     var studentResult = context.Exam
@@ -308,6 +311,8 @@ namespace ExamPlatform.Controllers
                 return RedirectToAction("ShowAllCheckedExams");
             }
         }
+        /// <summary>Renders the message template from template.json file.</summary>
+        /// <returns></returns>
         private JObject RenderMessageTemplateFromFile()
     {
             string path = @"C:\Users\Admin\Desktop\Finish\ASP-.NET-Core\ExamPlatform\template.json";
@@ -322,7 +327,9 @@ namespace ExamPlatform.Controllers
                 return o2;
             }
     }
-        private Dictionary<string, string> RenderEmailAccount()
+        /// <summary>Gets the email account from database and return.</summary>
+        /// <returns></returns>
+        private Dictionary<string, string> GetEmailAccountFromDB()
         {
             Dictionary<string, string> emailAccount = new Dictionary<string, string>();
             try
@@ -346,6 +353,11 @@ namespace ExamPlatform.Controllers
             }
 
     }
+        /// <summary>Sends the email message to the single student with exam results.Mehtod check if email have been sent properly and then return bool.</summary>
+        /// <param name="emailAccount">The email account.</param>
+        /// <param name="user">The user.</param>
+        /// <param name="message">The message.</param>
+        /// <returns></returns>
         private bool sendMessage(Dictionary<string,string> emailAccount, UserEmailInfoModel user, JObject message)
         {
             String subjectTemplate = message.GetValue("messageSubject").Value<String>();
