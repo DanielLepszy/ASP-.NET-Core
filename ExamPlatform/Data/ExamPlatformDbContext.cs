@@ -30,6 +30,7 @@ namespace ExamPlatform.Data
         public DbSet<ExamClosedQuestions> ExamClosedQuestions{ get; set; }
         public DbSet<ExamOpenedQuestions> ExamOpenedQuestions{ get; set; }
         public DbSet<Results> Results{ get; set; }
+        public DbSet<EmailAccount> EmailAccount{ get; set; }
        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -39,7 +40,6 @@ namespace ExamPlatform.Data
             modelBuilder.ApplyConfiguration(new ExamClosedQuestionsConfiguration());
             modelBuilder.ApplyConfiguration(new ExamOpenedQuestionsConfiguration());
             modelBuilder.ApplyConfiguration(new ResultsConfiguration());
-
         }
 
     }

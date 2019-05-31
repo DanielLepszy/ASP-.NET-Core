@@ -13,5 +13,12 @@
     }
     prevScrollpos = currentScrollPos;
 }
-document.getElementsByClassName("btn").style.display = 'none';
 
+//document.getElementsByClassName("btn").style.display = 'none';
+//if (!ViewData.ModelState.IsValid && ViewData.ModelState["Error"].Errors.Count > 0) {
+//    <text>
+//        $(document).ready(function() {
+//            alert('@ViewData.ModelState["Error"].Errors.First().ErrorMessage');
+//        });
+//            </text>
+//}

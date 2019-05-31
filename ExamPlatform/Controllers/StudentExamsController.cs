@@ -14,12 +14,49 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using ExamPlatform.Logger;
+using log4net;
+using System.Security.Cryptography;
 
 namespace ExamPlatform.Controllers
 {
 
     public class StudentExamsController : Controller
     {
+        ILog logger = SingletonFirst.Instance.GetLogger();
+        public static string DecryptString(string cipherText)
+        {
+            string keyString = "E546C8DF278CD5931069B522E695D4F2";
+            var fullCipher = Convert.FromBase64String(cipherText);
+
+            var iv = new byte[16];
+            var cipher = new byte[fullCipher.Length - iv.Length];
+
+            Buffer.BlockCopy(fullCipher, 0, iv, 0, iv.Length);
+            Buffer.BlockCopy(fullCipher, iv.Length, cipher, 0, fullCipher.Length - iv.Length);
+            var key = Encoding.UTF8.GetBytes(keyString);
+
+            using (var aesAlg = Aes.Create())
+            {
+                using (var decryptor = aesAlg.CreateDecryptor(key, iv))
+                {
+                    string result;
+                    using (var msDecrypt = new MemoryStream(cipher))
+                    {
+                        using (var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                        {
+                            using (var srDecrypt = new StreamReader(csDecrypt))
+                            {
+                                result = srDecrypt.ReadToEnd();
+                            }
+                        }
+                    }
+
+                    return result;
+                }
+            }
+        }
+
         /// <summary>Shows the student exams to check. This exams does not contain grade.</summary>
         /// <returns></returns>
         [Route("StudentsExams")]
@@ -76,7 +113,7 @@ namespace ExamPlatform.Controllers
 
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                logger.Error("StudentExamsController - ShowStudentExamsToCheck " + ex.Message);
                 return View();
             }
         }
@@ -98,9 +135,14 @@ namespace ExamPlatform.Controllers
                     List<String> valueList = new List<string>();
                     if (!x.Equals(AnswerPoint.Last()))
                     {
-                        foreach (var v in x.Value)
+                        foreach (var value in x.Value)
                         {
-                            valueList.Add(v);
+                            if(x.Key=="AnswerPoints" && value.Length==0)
+                            {
+                                TempData["Message"] = "Nie wszystkie odpowiedzi studenta otrzymały odpowiednią punktację";
+                                return RedirectToAction("ShowStudentExamsToCheck");
+                            }
+                            valueList.Add(value);
                         }
                         StudentExamModel.Add(x.Key, valueList);
                     }
@@ -114,11 +156,7 @@ namespace ExamPlatform.Controllers
                 StudentExamModel.ElementAt(4).Value.ForEach(
                     x => ResultsList.Add(double.Parse(x.Replace(".", ","))));
 
-                //foreach (var x in StudentExamModel.ElementAt(4).Value)
-                //{
-                   
-                //    ResultsList.Add(double.Parse(x.Replace(".", ",")));
-                //}
+              
                 StudentExamModel.ElementAt(0).Value.ForEach(x => ExamsID.Add(Int32.Parse(x)));
                 ExamsID = ExamsID.Distinct().ToList();
 
@@ -163,17 +201,17 @@ namespace ExamPlatform.Controllers
                         context.SaveChanges();
                     }
 
-                    //SendEmail(ExamsID, context);
+                   
                 }
                 return RedirectToAction("ShowStudentExamsToCheck");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                logger.Error("StudentExamsController - SetPointsForOpenedQuestionsToStudent " + ex.Message);
                 return View();
             }
         }
-
+        
         /// <summary>Sets the exam grade depends on purchased scores.</summary>
         /// <param name="score">The score.</param>
         /// <param name="MaxExamPoints">The maximum exam points.</param>
@@ -206,7 +244,7 @@ namespace ExamPlatform.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                logger.Error("StudentExamsController - SetExamGrade " + ex.Message);
                 return 0;
             }
         }
@@ -245,7 +283,7 @@ namespace ExamPlatform.Controllers
                 );
 
                     JObject messageTemplate = RenderMessageTemplateFromFile();
-                    JObject emailAccount = RenderEmailAccount();
+                    Dictionary<string,string> emailAccount = RenderEmailAccount();
                     var purveyed = sendMessage(emailAccount, user, messageTemplate);
 
                     var studentResult = context.Exam
@@ -265,7 +303,7 @@ namespace ExamPlatform.Controllers
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    logger.Error("StudentExamsController - SendEmail " + ex.Message);
                 }
                 return RedirectToAction("ShowAllCheckedExams");
             }
@@ -284,25 +322,36 @@ namespace ExamPlatform.Controllers
                 return o2;
             }
     }
-        private JObject RenderEmailAccount()
-    {
-        string path = @"C:\Users\Admin\Desktop\Finish\ASP-.NET-Core\ExamPlatform\emailAccount.json";
-        JObject o1 = JObject.Parse(System.IO.File.ReadAllText(path));
-
-        // read JSON directly from a file
-        using (StreamReader file = System.IO.File.OpenText(path))
-        using (JsonTextReader reader = new JsonTextReader(file))
+        private Dictionary<string, string> RenderEmailAccount()
         {
-            JObject o2 = (JObject)JToken.ReadFrom(reader);
-            return o2;
-        }
+            Dictionary<string, string> emailAccount = new Dictionary<string, string>();
+            try
+            {
+                using (var context = new ExamPlatformDbContext())
+                {
+                    
+                    var emailSecureData = (from x in context.EmailAccount
+                                           where x.EmailAccountID == 1
+                                           select new { x.EmailDomain, x.EmailAccountPassword }).Single();
+                    emailAccount.Add("domain", emailSecureData.EmailDomain);
+                    emailAccount.Add("emailPass", emailSecureData.EmailAccountPassword);
+
+                    return emailAccount;
+                }
+            }
+            catch(Exception ex)
+            {
+                logger.Error("StudentExamsController - RenderEmailAccount " + ex.Message);
+                return emailAccount;
+            }
+
     }
-        private bool sendMessage(JObject emailAccount, UserEmailInfoModel user, JObject message)
+        private bool sendMessage(Dictionary<string,string> emailAccount, UserEmailInfoModel user, JObject message)
         {
             String subjectTemplate = message.GetValue("messageSubject").Value<String>();
             String bodyTemplate = message.GetValue("messageBody").Value<String>();
-            String email = emailAccount.GetValue("emailAccount").Value<String>();
-            String emailPass = emailAccount.GetValue("password").Value<String>();
+            String email = emailAccount["domain"];
+            String emailPass = DecryptString(emailAccount["emailPass"]);
             String subject = String.Format(subjectTemplate, user.Course);
             String body = String.Format(bodyTemplate, user.Name, user.Surname, user.Grade, user.Course, user.ExamDate, user.Score, user.MaxScore);
 
@@ -321,10 +370,11 @@ namespace ExamPlatform.Controllers
             try
             {
                 client.Send(mailMessage);
+                logger.Info("Mail was sent properly");
                 return true;
             }catch(SmtpFailedRecipientException ex)
             {
-                Console.WriteLine("Message was not send");
+                logger.Error("StudentExamsController - sendMessage " + ex.Message);
                 return false;
             }
 
@@ -366,7 +416,7 @@ namespace ExamPlatform.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                logger.Error("StudentExamsController - ShowAllCheckedExams " + ex.Message);
                 return View();
             }
         }

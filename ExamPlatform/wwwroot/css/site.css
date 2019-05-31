@@ -152,21 +152,25 @@
     left:0%;
 }
 
-#LogInDiv {
+#LogInDiv,
+#ExamFinishedInfo {
     position: absolute;
     width: 70%;
     left: 50%;
     transform: translate(-50%,50%);
     border: 1px solid black;
     padding: 35px;
-    background-color:rgba(0, 0, 0, 0.72);
-   
+    background-color: rgba(0, 0, 0, 0.72);
+    border-radius:5px;
+    box-shadow: 10px 10px 5px #2f4c76;
 }
     #LogInDiv h1,
     #LogInDiv h2,
-    #LogInDiv h3
-    {
+    #LogInDiv h3,
+    #ExamFinishedInfo h2,
+    #ExamFinishedInfo p {
         text-align: center;
+      
     }
 
     #FirstPartExam {
@@ -197,8 +201,8 @@
     background-color: rgba(0, 0, 0, 0.45);
     border: 3px solid #779ED6;
 }
-#FrozenGlass,
-#ExamFinishedInfo {
+#FrozenGlass
+ {
     background: inherit;
     width: 70%;
     overflow: hidden;
@@ -207,16 +211,12 @@
 }
 
     #FrozenGlass div,
-    #FrozenGlass ol,
-    #ExamFinishedInfo h2,
-    #ExamFinishedInfo
-
-    p {
+    #FrozenGlass ol
+    {
         padding-left: 25px;
     }
 
-    #FrozenGlass:before,
-    #ExamFinishedInfo:before
+    #FrozenGlass:before
    {
         z-index: -1;
         content: '';

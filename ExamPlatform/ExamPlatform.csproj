@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>d2a7e779-09db-41a3-8f3c-617d23181b47</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,10 +24,13 @@
     <Compile Remove="Migrations\20190317124553_add status to account.Designer.cs" />
     <Compile Remove="Migrations\20190414215407_new decimal.cs" />
     <Compile Remove="Migrations\20190414215407_new decimal.Designer.cs" />
+    <Compile Remove="Migrations\20190530140802_add email account.cs" />
+    <Compile Remove="Migrations\20190530140802_add email account.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="4.0.1" />
+    <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.1" PrivateAssets="All" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.1.1" />
@@ -42,6 +46,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ExamPlatformDataModel\ExamPlatformDataModel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="log4net.config">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

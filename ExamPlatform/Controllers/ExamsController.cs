@@ -10,35 +10,47 @@ using System.Linq;
 using MoreLinq;
 using Castle.DynamicProxy;
 using System.Threading.Tasks;
+using log4net;
+using ExamPlatform.Logger;
 
 namespace ExamPlatform.Controllers
 {
     public class ExamsController : Controller
     {
+        ILog logger = SingletonFirst.Instance.GetLogger();
+    
         /// <summary>  Drawing random closed questions without repetitions.</summary>
         /// <param name="AllQuestionsFromDB">All questions from database.</param>
         /// <param name="AmountOfSelecetedQuestions">The amount of seleceted questions.</param>
         /// <returns></returns>
         public List<ClosedQuestions> SelectClosedQuestions(List<ClosedQuestions> AllQuestionsFromDB, int AmountOfSelecetedQuestions)
         {
-            Random random = new Random();
             List<ClosedQuestions> selectedQuestions = new List<ClosedQuestions>();
-            
-            int RandomIndex = random.Next(AllQuestionsFromDB.Count);
-            
-      
-                selectedQuestions.Add(AllQuestionsFromDB[RandomIndex]);
-             
-            for(int i=0;i< AmountOfSelecetedQuestions-1; i++)
+            try
             {
-                while (selectedQuestions.Contains(AllQuestionsFromDB[RandomIndex]))
-                {
-                    RandomIndex= random.Next(AllQuestionsFromDB.Count);
-                }
+                Random random = new Random();
+                int RandomIndex = random.Next(AllQuestionsFromDB.Count);
+
+
                 selectedQuestions.Add(AllQuestionsFromDB[RandomIndex]);
+
+                for (int i = 0; i < AmountOfSelecetedQuestions - 1; i++)
+                {
+                    while (selectedQuestions.Contains(AllQuestionsFromDB[RandomIndex]))
+                    {
+                        RandomIndex = random.Next(AllQuestionsFromDB.Count);
+                    }
+                    selectedQuestions.Add(AllQuestionsFromDB[RandomIndex]);
+                }
+
+                return selectedQuestions;
             }
-         
-            return selectedQuestions;
+            catch(Exception ex)
+            {
+                logger.Error("ExamsController - SelectClosedQuestions " + ex.Message);
+                return selectedQuestions;
+            }
+           
         }
         /// <summary>  Drawing the opened questions without repetitions.</summary>
         /// <param name="AllQuestionsFromDB">All questions from database.</param>
@@ -46,24 +58,32 @@ namespace ExamPlatform.Controllers
         /// <returns></returns>
         public List<OpenedQuestions> SelectOpenedQuestions(List<OpenedQuestions> AllQuestionsFromDB, int AmountOfSelecetedQuestions)
         {
-            Random random = new Random();
             List<OpenedQuestions> selectedQuestions = new List<OpenedQuestions>();
-
-            int RandomIndex = random.Next(AllQuestionsFromDB.Count);
-
-            
-            selectedQuestions.Add(AllQuestionsFromDB[RandomIndex]);
-            
-            for (int i = 0; i < AmountOfSelecetedQuestions-1; i++)
+            try
             {
-                while (selectedQuestions.Contains(AllQuestionsFromDB[RandomIndex]))
-                {
-                    RandomIndex = random.Next(AllQuestionsFromDB.Count);
-                }
-                selectedQuestions.Add(AllQuestionsFromDB[RandomIndex]);
-            }
+                Random random = new Random();
+                int RandomIndex = random.Next(AllQuestionsFromDB.Count);
 
-            return selectedQuestions;
+
+                selectedQuestions.Add(AllQuestionsFromDB[RandomIndex]);
+
+                for (int i = 0; i < AmountOfSelecetedQuestions - 1; i++)
+                {
+                    while (selectedQuestions.Contains(AllQuestionsFromDB[RandomIndex]))
+                    {
+                        RandomIndex = random.Next(AllQuestionsFromDB.Count);
+                    }
+                    selectedQuestions.Add(AllQuestionsFromDB[RandomIndex]);
+                }
+
+                return selectedQuestions;
+            }
+            catch(Exception ex)
+            {
+                logger.Error("ExamsController - SelectOpenedQuestions " + ex.Message);
+                return selectedQuestions;
+            }
+          
         }
         /// <summary>Creates the exam closed questions model depends of received of closed qouestions model .</summary>
         /// <param name="list">The list.</param>
@@ -85,7 +105,7 @@ namespace ExamPlatform.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                logger.Error("ExamsController - CreateExamClosedQuestions " + ex.Message);
             }
             return ExamQuestions;
 
@@ -110,7 +130,7 @@ namespace ExamPlatform.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                logger.Error("ExamsController - CreateExamOpenedQuestions " + ex.Message);
             }
 
             return ExamQuestions;
@@ -152,8 +172,7 @@ namespace ExamPlatform.Controllers
             }
             catch (Exception ex)
             {
-
-                Console.WriteLine(ex.Message);
+                logger.Error("ExamsController - SetExamScoreFromClosedQuestionAnswers " + ex.Message);
                 return null;
             }
         }
@@ -164,11 +183,12 @@ namespace ExamPlatform.Controllers
         /// <returns></returns>
         public List<ExamOpenedQuestions> SetUserAnswers(ExamPlatformDbContext context, Dictionary<string, string> QuestionsAndUserAnswersFromExam, int? examID)
         {
-            
+            try
+            {
                 var QuestionsFromDB = (from x in context.ExamOpenedQuestions
                                        where x.ExamsID == examID && x.OpenedQuestionsID == x.OpenedQuestions.OpenedQuestionsID
                                        select new { ExamOpenedQuestionObject = x, OpenedQuestionObject = x.OpenedQuestions })
-                                             .ToDictionary(z => z.OpenedQuestionObject, t => t.ExamOpenedQuestionObject);
+                                            .ToDictionary(z => z.OpenedQuestionObject, t => t.ExamOpenedQuestionObject);
 
                 foreach (var singleQuestion in QuestionsFromDB)
                 {
@@ -181,6 +201,13 @@ namespace ExamPlatform.Controllers
                     }
                 }
                 return QuestionsFromDB.Values.ToList();
+            }
+            catch(Exception ex)
+            {
+                logger.Error("ExamsController - SetUserAnswers " + ex.Message);
+                return null;
+            }
+               
         }
 
         /// <summary>Creates and shows the exam with random questions for single student.</summary>
@@ -240,7 +267,7 @@ namespace ExamPlatform.Controllers
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    logger.Error("ExamsController - ShowExam " + ex.Message);
                     return View();
                 }
             }
@@ -292,7 +319,7 @@ namespace ExamPlatform.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                logger.Error("ExamsController - SetClosedQuestionsAnswers " + ex.Message);
                 return View();
             }
         }
@@ -319,7 +346,7 @@ namespace ExamPlatform.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                logger.Error("ExamsController - ShowOpenedQuestions " + ex.Message); 
                 return View();
             }
         }
@@ -353,7 +380,7 @@ namespace ExamPlatform.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                logger.Error("ExamsController - SetOpenedQuestionsAnswers " + ex.Message);
                 return View();
             }
         }

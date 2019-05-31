@@ -4,7 +4,9 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using ExamPlatform.Data;
+using ExamPlatform.Logger;
 using ExamPlatformDataModel;
+using log4net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,24 +15,35 @@ namespace ExamPlatform.Controllers
    
     public class AccountsController : Controller
     {
-
+        ILog logger = SingletonFirst.Instance.GetLogger();
+        
         /// <summary>Hashes the password of accounts.</summary>
         /// <param name="pass">The pass.</param>
         /// <returns></returns>
-        public String HashPass(String pass)
-        {
+         public String HashPass(String pass)
+         {
             using (MD5 md5Hash = MD5.Create())
             {
-                byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(pass));
-                StringBuilder sBuilder = new StringBuilder();
 
-                //Loop through each byte of the hashed data
-                //and format each one as a hexadecimal string.
-                for (int i = 0; i < data.Length; i++)
+                try
                 {
-                    sBuilder.Append(data[i].ToString("x2"));
+                    byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(pass));
+                    StringBuilder sBuilder = new StringBuilder();
+
+                    //Loop through each byte of the hashed data
+                    //and format each one as a hexadecimal string.
+                    for (int i = 0; i < data.Length; i++)
+                    {
+                        sBuilder.Append(data[i].ToString("x2"));
+                    }
+                    return sBuilder.ToString();
                 }
-                return sBuilder.ToString();
+                catch(Exception ex)
+                {
+                    logger.Error(ex.Message);
+                    return "";
+                }
+                
             }
         }
 
@@ -85,7 +98,7 @@ namespace ExamPlatform.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                logger.Error("AccountsController - CheckLoginDetails. " + ex.Message);
                 return View("LoginError");
             }
         }
@@ -94,8 +107,16 @@ namespace ExamPlatform.Controllers
         /// <returns></returns>
         public IActionResult Logout()
         {
-            HttpContext.Session.Clear();
-            return View("Logout");
+            try
+            {
+                HttpContext.Session.Clear();
+                return View("Logout");
+            }
+            catch(Exception ex)
+            {
+                logger.Error("AccountsController - Logout " + ex.Message);
+                return View();
+            }
         }
         /// <summary>Navigates to main page, depends on type of user Admin/Student</summary>
         /// <returns></returns>
@@ -138,10 +159,16 @@ namespace ExamPlatform.Controllers
         [HttpGet]
             public IActionResult CreateAccountForStudent()
             {
-           
-            Accounts NewAccount = new Accounts() { Status="STUDENT"};
-            return View(NewAccount);
-            
+             try
+                {
+                    Accounts NewAccount = new Accounts() { Status = "STUDENT" };
+                    return View(NewAccount);
+                }
+             catch (Exception ex)
+                {
+                    logger.Error("AccountsController - CreateAccountForStudent " + ex.Message);
+                    return View();
+                }
             }
 
         /// <summary>  Check if username is not duplicated. If not, it's create new student account with new properties. Otherwise send feedback that someone use the same username</summary>
@@ -151,6 +178,8 @@ namespace ExamPlatform.Controllers
         [HttpPost]
         public IActionResult SetNewAccountIntoDatabase(Accounts NewAccount)
         {
+            try
+            {
                 bool ifNewUsernameExistInDB(String usernameFromUserLoginToCheck, List<Accounts> accountsListFromDB)
                 {
                     foreach (Accounts account in accountsListFromDB)
@@ -166,29 +195,34 @@ namespace ExamPlatform.Controllers
                 }
            
                 string newUsername = NewAccount.Username;
-                using (var context = new ExamPlatformDbContext())
-                {
-                    var accountsList = (from securityAccount
-                                        in context.Account
-                                        select securityAccount).ToList();
+            using (var context = new ExamPlatformDbContext())
+            {
 
-                    if (!ifNewUsernameExistInDB(newUsername, accountsList))
-                    {
-                        NewAccount.Username = newUsername;
+                var accountsList = (from securityAccount
+                                    in context.Account
+                                    select securityAccount).ToList();
+
+                if (!ifNewUsernameExistInDB(newUsername, accountsList))
+                {
+                    NewAccount.Username = newUsername;
                     NewAccount.Password = HashPass(NewAccount.Password);
                     context.Account.Add(NewAccount);
-                        context.SaveChanges();
-                        HttpContext.Session.SetInt32("UserID", NewAccount.AccountsID);
+                    context.SaveChanges();
+                    HttpContext.Session.SetInt32("UserID", NewAccount.AccountsID);
 
-                        return View("LogIn", NewAccount);
-                    }
-                    else
-                    {
-                        return View("RegisterError");
-                    }
+                    return View("LogIn", NewAccount);
+                }
+                else
+                {
+                    return View("RegisterError");
                 }
             }
-          
-           
+            }
+            catch (Exception ex)
+            {
+                logger.Error("AccountsController - SetNewAccountIntoDatabase " + ex.Message);
+                return View();
+            }
         }
     }
+}

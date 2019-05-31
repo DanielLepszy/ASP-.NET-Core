@@ -1,55 +1,62 @@
 ﻿
 @model IList<ExamPlatform.Models.StudentExamsModel>
 
-@if(Model.Count()!=0)
-{ 
-    @foreach (var x in Model)
-     {
-<div id="StudentExamDiv">
-    <h1>@x.StudentName @x.StudentSurname</h1>
-
-    <form id="OpenedQuestionsForm" name="AnswersForm" asp-controller="Exams" asp-action="ShowOpenedQuestions">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Opened Question</th>
-                    <th scope="col">Answer</th>
-                    <th scope="col">Points</th>
-                    <th scope="col">Max</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-
-                @foreach (var z in x.SingleStudentExam)
-                {
-                    <tr class="form-group">
-                        <th scope="row"></th>
-                        <input type="hidden" name="ExamID" value="@x.ExamsUserID" />
-                        <input type="hidden" name="ExamOpenedQuestionID" value="@z.ExamOpenedQuestionID" />
-                        <td><input type="hidden" name="OpenedQuestions" value="@z.OpenedQuestion" />@z.OpenedQuestion</td>
-                        <td><input type="hidden" name="UserAnswer" value="@z.Answer" />@z.Answer</td>
-                        <td><input type="number" name="AnswerPoints" min="0" max="@z.MaxPoint" step="0.5" class="form-control" /></td>
-                        <td><p class="form-control">/@z.MaxPoint</p></td>
-                    </tr>
-
-                }
-
-            </tbody>
-        </table>
-
-        <input type="submit" value="Submit" class="btn btn-primary btn-lg" id="sumbitPointsButton"
-               asp-controller="StudentExams" asp-action="SetPointsForOpenedQuestionsToStudent" />
-    </form>
-  
-</div>
-     }
-}
-@if(Model.Count() == 0)
+@if (Model.Count() != 0)
 {
-        <h2>
-            There are no exams to check
-        </h2>
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-danger">
+            <strong>@TempData["Message"]</strong>
+        </div>
+    }
+    @foreach (var x in Model)
+    {
+        <div id="StudentExamDiv">
+            <h1>@x.StudentName @x.StudentSurname</h1>
+
+            <form id="OpenedQuestionsForm" name="AnswersForm" asp-controller="Exams" asp-action="ShowOpenedQuestions">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Opened Question</th>
+                            <th scope="col">Answer</th>
+                            <th scope="col">Points</th>
+                            <th scope="col">Max</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+
+                        @foreach (var z in x.SingleStudentExam)
+                        {
+                            <tr class="form-group">
+                                <th scope="row"></th>
+                                <input type="hidden" name="ExamID" value="@x.ExamsUserID" />
+                                <input type="hidden" name="ExamOpenedQuestionID" value="@z.ExamOpenedQuestionID" />
+                                <td><input type="hidden" name="OpenedQuestions" value="@z.OpenedQuestion" />@z.OpenedQuestion</td>
+                                <td><input type="hidden" name="UserAnswer" value="@z.Answer" />@z.Answer</td>
+                                <td><input type="number" name="AnswerPoints" min="0" max="@z.MaxPoint" step="0.5" class="form-control" /></td>
+                                <td><p class="form-control">/@z.MaxPoint</p></td>
+                            </tr>
+
+                        }
+
+                    </tbody>
+                </table>
+
+                <input type="submit" value="Submit" class="btn btn-primary btn-lg" id="sumbitPointsButton"
+                       asp-controller="StudentExams" asp-action="SetPointsForOpenedQuestionsToStudent" />
+            </form>
+
+        </div>
+    }
+}
+@if (Model.Count() == 0)
+{
+    <h2>
+        There are no exams to check
+    </h2>
 }
